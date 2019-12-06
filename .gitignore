@@ -80,3 +80,5 @@ _deps
 
 # Build folders
 build/
+bin/
+lib/
