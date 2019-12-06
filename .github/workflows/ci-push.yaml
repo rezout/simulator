@@ -1,0 +1,31 @@
+name: Integration testing of ${{ github.ref }} on commit ${{ github.sha }}
+
+on:
+  push:
+    tags-ignore:
+    - "v*" # version tags. These will be handled by the cd process.
+
+jobs:
+  build-and-test: # Keep this job synchronized across all workflows.
+    runs-on: ubuntu-latest
+
+    steps:
+    # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    - name: Checkout repo
+      uses: actions/checkout@v1
+      with:
+        submodules: recursive
+        fetch-depth: 1
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # Caching Docker images would be nice, but see https://github.com/actions/cache/pull/37 for the problems.
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    - name: Build
+      run: ./build.sh
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    - name: Test
+      run: ./test.sh
+
+    # TODO: create package and send that to the artifact storage.
